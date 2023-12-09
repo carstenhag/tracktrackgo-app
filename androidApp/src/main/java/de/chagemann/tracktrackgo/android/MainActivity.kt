@@ -3,38 +3,43 @@ package de.chagemann.tracktrackgo.android
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import de.chagemann.tracktrackgo.Greeting
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import de.chagemann.tracktrackgo.StartViewModel
+import de.chagemann.tracktrackgo.android.Screens.*
+import dev.icerock.moko.mvvm.getViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MyApplicationTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                NavHost(
+                    navController = rememberNavController(),
+                    startDestination = Start.route
                 ) {
-                    GreetingView(Greeting().greet())
+                    composable(Start.route) {
+                        StartScreen(viewModel = getViewModel { StartViewModel() })
+                    }
                 }
             }
         }
     }
 }
 
-@Composable
-fun GreetingView(text: String) {
-    Text(text = text)
+enum class Screens(val route: String) {
+    Start("start")
 }
 
-@Preview
 @Composable
-fun DefaultPreview() {
-    MyApplicationTheme {
-        GreetingView("Hello, Android!")
+fun StartScreen(viewModel: StartViewModel) {
+    val state by viewModel.viewState.collectAsState()
+    Button(onClick = { viewModel.fetchData("1") }) {
+        Text(text = state.counter.toString())
     }
 }

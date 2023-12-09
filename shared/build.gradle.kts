@@ -27,6 +27,7 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.content.negotation)
             implementation(libs.ktor.serialization.json)
+            api(libs.moko.mvvm.core) // only ViewModel, EventsDispatcher, Dispatchers.UI
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
